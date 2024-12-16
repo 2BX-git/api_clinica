@@ -1,0 +1,385 @@
+{
+	"info": {
+		"_postman_id": "your-postman-id",
+		"name": "API Clínica",
+		"description": "API para gerenciamento de clínica médica",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"exec": [
+					"pm.environment.set('base_url', 'http://localhost/api_clinica/public');"
+				],
+				"type": "text/javascript"
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost/api_clinica/public"
+		}
+	],
+	"item": [
+		{
+			"name": "Autenticação",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"if (jsonData.token) {",
+									"    pm.environment.set('token', jsonData.token);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"admin@example.com\",\n    \"senha\": \"123456\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/login",
+							"host": ["{{base_url}}"],
+							"path": ["login"]
+						},
+						"description": "Autenticação do usuário"
+					}
+				}
+			]
+		},
+		{
+			"name": "Usuários",
+			"item": [
+				{
+					"name": "Listar Usuários",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/usuarios",
+							"host": ["{{base_url}}"],
+							"path": ["usuarios"]
+						}
+					}
+				},
+				{
+					"name": "Criar Usuário",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nome\": \"Novo Usuário\",\n    \"email\": \"novo@example.com\",\n    \"senha\": \"123456\",\n    \"tipo\": \"admin\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/usuarios",
+							"host": ["{{base_url}}"],
+							"path": ["usuarios"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Agendamentos",
+			"item": [
+				{
+					"name": "Listar Agendamentos",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/agendamentos",
+							"host": ["{{base_url}}"],
+							"path": ["agendamentos"]
+						}
+					}
+				},
+				{
+					"name": "Buscar Agendamento",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/agendamentos/1",
+							"host": ["{{base_url}}"],
+							"path": ["agendamentos", "1"]
+						}
+					}
+				},
+				{
+					"name": "Criar Agendamento",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"profissional_id\": 7,\n    \"clinica_id\": 1,\n    \"procedimento_id\": 1,\n    \"paciente_nome\": \"Maria Silva\",\n    \"paciente_telefone\": \"11999999999\",\n    \"data_agendamento\": \"2024-12-16\",\n    \"hora_inicio\": \"08:00:00\",\n    \"hora_fim\": \"08:30:00\",\n    \"observacoes\": \"Primeira consulta\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/agendamentos",
+							"host": ["{{base_url}}"],
+							"path": ["agendamentos"]
+						}
+					}
+				},
+				{
+					"name": "Atualizar Status",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"status\": \"confirmado\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/agendamentos/1",
+							"host": ["{{base_url}}"],
+							"path": ["agendamentos", "1"]
+						}
+					}
+				},
+				{
+					"name": "Cancelar Agendamento",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/agendamentos/1/cancelar",
+							"host": ["{{base_url}}"],
+							"path": ["agendamentos", "1", "cancelar"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Profissionais",
+			"item": [
+				{
+					"name": "Listar Profissionais",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/profissionais",
+							"host": ["{{base_url}}"],
+							"path": ["profissionais"]
+						}
+					}
+				},
+				{
+					"name": "Buscar Horários Disponíveis",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/profissionais/7/clinicas/1/horarios-disponiveis?data=2024-12-16",
+							"host": ["{{base_url}}"],
+							"path": ["profissionais", "7", "clinicas", "1", "horarios-disponiveis"],
+							"query": [
+								{
+									"key": "data",
+									"value": "2024-12-16"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Buscar Horários de Trabalho",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/profissionais/7/clinicas/1/horarios",
+							"host": ["{{base_url}}"],
+							"path": ["profissionais", "7", "clinicas", "1", "horarios"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Procedimentos",
+			"item": [
+				{
+					"name": "Listar Procedimentos",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/procedimentos",
+							"host": ["{{base_url}}"],
+							"path": ["procedimentos"]
+						}
+					}
+				},
+				{
+					"name": "Buscar Procedimentos por Especialidade",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/especialidades/1/procedimentos",
+							"host": ["{{base_url}}"],
+							"path": ["especialidades", "1", "procedimentos"]
+						}
+					}
+				}
+			]
+		}
+	]
+}
